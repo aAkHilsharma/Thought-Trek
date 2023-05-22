@@ -4,16 +4,21 @@ import Login from './components/pages/Login';
 import { Routes, Route } from 'react-router-dom';
 import Home from './components/pages/Home';
 import Regsiter from './components/pages/Regsiter';
+import { UserContextProvider } from './UserContext';
+import CreatePost from './components/pages/CreatePost';
 
 function App() {
   return (
-    <Routes>
-      <Route path='/' element={<Layout />}>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Regsiter />} />
-      </Route>
-    </Routes>
+    <UserContextProvider>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Regsiter />} />
+          <Route path='/create' element={<CreatePost />} />
+        </Route>
+      </Routes>
+    </UserContextProvider>
   );
 }
 

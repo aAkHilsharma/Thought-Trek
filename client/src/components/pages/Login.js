@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -7,6 +8,7 @@ const Login = () => {
     password: '',
   });
   const [redirect, setRedirect] = useState(false);
+  const { setUserInfo } = useContext(UserContext);
   function handleChange(e) {
     const { name, value } = e.target;
     setCredentials((prev) => {
@@ -28,7 +30,10 @@ const Login = () => {
       credentials: 'include',
     });
     if (response.ok) {
-      setRedirect(true);
+      response.json().then((userInfo) => {
+        setUserInfo(userInfo);
+        setRedirect(true);
+      });
     } else {
       alert('Wrong credentials');
     }

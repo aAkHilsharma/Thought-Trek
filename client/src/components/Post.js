@@ -1,25 +1,27 @@
-import React from 'react';
+import ReactTimeAgo from 'react-time-ago';
 
-const Post = () => {
+const Post = ({
+  title,
+  summary,
+  cover,
+  content,
+  createdAt,
+  author: { username },
+}) => {
   return (
     <div className='post'>
       <div className='image'>
-        <img src='https://techcrunch.com/wp-content/uploads/2023/02/this-week-in-apps-splash-2023.webp?w=850&h=492&crop=1' />
+        <img src={'http://localhost:5000/' + cover} />
       </div>
       <div className='texts'>
-        <h2>
-          ChatGPT comes to iPhone, Bing AI efforts expand, Instagram’s Twitter
-          clone
-        </h2>
+        <h2>{title}</h2>
         <p className='info'>
-          <a className='author'>Dave</a>
-          <time>2023-05-22</time>
+          <a className='author'>{username}</a>
+          <time>
+            <ReactTimeAgo date={new Date(createdAt)} locale='en-US' />
+          </time>
         </p>
-        <p className='summary'>
-          The app economy in 2023 hit a few snags, as consumer spending last
-          year dropped for the first time by 2% to $167 billion, according to
-          data.ai’s “State of Mobile” report.
-        </p>
+        <p className='summary'>{summary}</p>
       </div>
     </div>
   );
