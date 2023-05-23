@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads' });
+const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const Post = require('../models/postModel');
 
@@ -19,9 +19,8 @@ router.post('/register', async function (req, res) {
     req.body.password = hashedPassword;
     const user = new User(req.body);
     await user.save();
-    console.log(user);
+    res.json('User registered successfully');
   } catch (err) {
-    console.log(err.message);
     res.status(500).send('Server Error');
   }
 });
@@ -98,6 +97,47 @@ router.get('/post', async function (req, res) {
     .sort({ createdAt: -1 })
     .limit(20);
   res.json(posts);
+});
+
+router.get('/post/:id', async function (req, res) {
+  const { id } = req.params;
+  const postDoc = await Post.findOne({ _id: id }).populate('author', [
+    'username',
+  ]);
+  res.json({ postDoc });
+});
+
+router.put('/post', upload.single('file'), async function (req, res) {
+  let newPath = null;
+  if (req.file) {
+    const { originalname, path } = req.file;
+    const parts = originalname.split('.');
+    console.log(parts);
+    const ext = parts[parts.length - 1];
+    newPath = path + '.' + ext;
+    fs.renameSync(path, newPath);
+  }
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.jwt_secret, {}, async (err, info) => {
+    if (err) {
+      throw err;
+    }
+    const { id, title, summary, content } = req.body;
+    const postDoc = await Post.findOne({ _id: id });
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json('You are not the author');
+    }
+
+    await postDoc.updateOne({
+      title,
+      summary,
+      content,
+      cover: newPath ? newPath : postDoc.cover,
+    });
+
+    res.json(postDoc);
+  });
 });
 
 module.exports = router;

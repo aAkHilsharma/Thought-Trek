@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { Navigate } from 'react-router-dom';
+import Editor from '../Editor';
 
 const CreatePost = () => {
   const [post, setPost] = useState({
@@ -59,13 +58,7 @@ const CreatePost = () => {
         onChange={handleChange}
       />
       <input type='file' onChange={(e) => setFiles(e.target.files)} />
-      {/* <Editor value={content} onChange={setContent} /> */}
-      <ReactQuill
-        theme='snow'
-        name='content'
-        value={content}
-        onChange={setContent}
-      />
+      <Editor value={content} onChange={setContent} />
       <button style={{ marginTop: '5px' }}>Create post</button>
     </form>
   );

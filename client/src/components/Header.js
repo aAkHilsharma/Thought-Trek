@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
 
@@ -18,15 +18,15 @@ const Header = () => {
     fetch('http://localhost:5000/logout', {
       credentials: 'include',
       method: 'POST',
+    }).then(() => {
+      setUserInfo(null);
     });
-    setUserInfo(null);
   }
 
   const username = userInfo?.username;
-  console.log(username);
   return (
     <header>
-      <Link to='#' className='logo'>
+      <Link to='/' className='logo'>
         ThoughtTrek
       </Link>
       <nav>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
 const Regsiter = () => {
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
   });
+  const [redirect, setRedirect] = useState(false);
   function handleChange(e) {
     const { name, value } = e.target;
     setCredentials((prev) => {
@@ -24,11 +26,14 @@ const Regsiter = () => {
         'Content-Type': 'application/json',
       },
     });
-    if (response.status === 200) {
-      alert('Registeration successful');
+    if (response.ok) {
+      setRedirect(true);
     } else {
       alert('Registeration Failed');
     }
+  }
+  if (redirect) {
+    return <Navigate to={'/'} />;
   }
   return (
     <form className='register' onSubmit={register}>
